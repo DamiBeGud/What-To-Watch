@@ -382,3 +382,414 @@ For each UI/inference diagram, add a short paragraph that explains:
 5. `K-Phase.ipynb`
 
 This order preserves the QUAAACK logic and matches the writing style pattern used in the `.tests` reference repo.
+
+---
+
+## 6. App Architecture Standards (applies to Streamlit app implementation tasks)
+
+These standards apply to the **post-QUAAACK app implementation tasks** below and should be read together with `AGENTS.md`, `DATA.md`, `DECISIONS.md`, and `ARCHITECTURE.md`.
+
+### Architecture Direction (required)
+- Use a layered app structure with clear separation of concerns:
+  - `UI/View -> Application Services -> Repositories/Infrastructure -> Artifacts`
+- Keep Streamlit UI code focused on interaction and rendering.
+- Keep recommendation logic, routing, and explanation generation in service-layer code (not in views).
+- Keep artifact loading, file parsing, and schema validation in infrastructure/repository code (not in UI).
+
+### Dependency Rules (required)
+- `app/` may depend on `src/serving/` or application service facades, but should not parse artifact files directly.
+- `src/application/` may depend on `src/domain/` and `src/application/ports/`, but not on Streamlit UI modules.
+- `src/infrastructure/` may implement repository/ranker ports and read `artifacts/`, but should not import `app/views`.
+- `src/domain/` should remain framework-light and reusable (requests, responses, enums, models).
+- Streamlit-specific caching (`st.cache_data`, `st.cache_resource`) should be isolated in UI bootstrap or dedicated cache wrappers.
+
+### App Runtime Rules (required)
+- Do not retrain heavy models or rebuild large similarity matrices in the Streamlit request path.
+- Load artifacts from `artifacts/` and run inference/ranking only.
+- Validate required artifacts at startup and fail with clear, actionable error messages if files are missing.
+- Provide explicit fallback behavior for sparse/new-user states and empty recommendation sets.
+- Surface explanation text for each recommendation mode in plain language.
+
+### App Quality and Trust Rules (required)
+- Log or expose lightweight timing/debug information for recommendation requests (at least in a debug mode).
+- Keep mode routing and fallback decisions inspectable (for example: mode used, fallback triggered, why).
+- Handle missing metadata gracefully (show placeholders instead of dropping recommendations silently).
+- Keep assumptions and limitations visible in docs and demo guidance.
+
+---
+
+## 7. Post-QUAAACK Streamlit App Implementation Tasks
+
+The tasks below continue after `K-Phase.ipynb` and convert the notebook decisions into a working Streamlit application. They are implementation tasks (not notebook tasks), but they follow the same documentation discipline used in QUAAACK.
+
+### Task 6 - App Architecture and Serving Contract (`ARCHITECTURE.md`)
+
+### Goal
+Define a professional, implementation-ready architecture for the Streamlit app with clear layer boundaries and dependency rules.
+
+### Deliverable
+Create `ARCHITECTURE.md` that documents the app structure, request flow, artifact/runtime separation, and layer responsibilities for the Movie Recommendation App.
+
+### Must Include
+1. **Layered application structure**
+   - `UI/View -> Application Services -> Repositories/Infrastructure -> Artifacts`
+   - concrete folder/file structure (for example `app/`, `src/domain/`, `src/application/`, `src/infrastructure/`, `src/serving/`)
+2. **Dependency direction rules**
+   - what each layer may import/call
+   - what each layer must not depend on
+3. **Request flow definition**
+   - `View -> Controller -> RecommendationService -> RoutingService -> Ranker(s) + Repositories -> Response DTO -> Presenter -> View`
+4. **Artifact/runtime boundary**
+   - offline export vs app runtime loading
+   - startup validation behavior and missing-artifact handling
+5. **Mode routing and fallback design**
+   - personalized mode
+   - cold-start mode
+   - similar-movie mode
+   - fallback behavior and explanation routing
+6. **Caching boundaries**
+   - `st.cache_resource`, `st.cache_data`, and `st.session_state` usage boundaries
+7. **Testing strategy by layer**
+   - unit, integration, and smoke-test responsibilities
+8. **Required implementation assumption**
+   - include a recommended compact user-profile artifact (for example `artifacts/user_profiles_train.parquet`) for returning-user mode
+
+### Recommended Visuals / Diagrams
+- Layered architecture diagram (UI -> services -> repositories -> artifacts)
+- Request-to-result sequence/flow diagram
+- Artifact/runtime boundary diagram
+
+### Non-Technical Explanation Requirement
+For each architecture or flow diagram, add a short paragraph that explains:
+- what each layer/box does in plain language
+- what happens first/next when a user requests recommendations
+- why this separation improves reliability and maintainability
+
+---
+
+### Task 7 - Artifact Export and Startup Validation for App Serving
+
+### Goal
+Prepare and validate the offline artifacts required by the Streamlit app so the runtime path stays fast and reproducible.
+
+### Deliverable
+Export the required app-serving artifacts into `artifacts/`, define/validate a serving manifest, and implement startup validation checks for file presence and schema compatibility.
+
+### Must Include
+1. **Artifact export execution**
+   - export the A-Phase planned artifacts into `artifacts/`
+   - verify exported paths match the documented artifact manifest
+2. **Returning-user support artifact**
+   - add a compact user-profile artifact (for example `artifacts/user_profiles_train.parquet`, `.csv`, or `.jsonl`)
+   - document its schema and how it is used by personalized mode
+3. **Manifest and compatibility checks**
+   - validate `artifacts/aaa_artifact_manifest.json`
+   - validate `artifacts/aaa_selected_params.json`
+   - check version/parameter compatibility with app expectations
+4. **Startup validation behavior**
+   - missing file detection
+   - schema/column mismatch handling
+   - clear error messages for developers
+5. **Provenance and assumptions**
+   - record which A-Phase run/config generated the artifacts
+   - note sampled-vs-full evaluation assumptions when relevant
+
+### Recommended Visuals / Diagrams
+- Artifact map (`artifacts/` files and how each is used at runtime)
+- Startup validation flow (load -> check -> fail fast / proceed)
+
+### Non-Technical Explanation Requirement
+For each artifact/validation diagram, explain:
+- what files the app needs before it can run
+- what the app checks at startup
+- what happens on screen or in logs if something is missing
+
+---
+
+### Task 8 - Streamlit App Scaffolding and UI Foundation
+
+### Goal
+Create the Streamlit app skeleton with a professional structure for views, components, controllers, presenters, and session state management.
+
+### Deliverable
+Implement the app entrypoint (`streamlit_app.py` and/or `app/main.py`) and a minimal but functional UI foundation that supports mode selection, shared filters, and structured rendering placeholders.
+
+### Must Include
+1. **App entrypoint and bootstrap**
+   - `streamlit_app.py` (or root delegator to `app/main.py`)
+   - app startup wiring and dependency initialization
+2. **UI structure**
+   - `app/views/`, `app/components/`, `app/controllers/`, `app/presenters/`, `app/state/`
+   - clear responsibility split between layout/rendering and backend calls
+3. **Core screens/components**
+   - mode selector
+   - search / selection controls
+   - shared filters
+   - results area and explanation/status region
+4. **Session state helpers**
+   - preserve selected mode, filters, and last request/response context across reruns
+5. **Path/config handling**
+   - central config for artifact paths and runtime settings (do not hardcode everywhere)
+
+### Recommended Visuals / Diagrams
+- Streamlit UI wireframe (sidebar + main panel)
+- Component map (which UI parts render which responsibilities)
+
+### Non-Technical Explanation Requirement
+For each UI diagram/wireframe, add a short paragraph that explains:
+- what the user clicks/selects
+- what appears on screen
+- how the layout helps users move between recommendation modes
+
+---
+
+### Task 9 - Repositories, Loaders, and Artifact Access Layer
+
+### Goal
+Implement a repository/infrastructure layer that centralizes artifact loading, parsing, lookup construction, and startup validation so UI and services do not read files directly.
+
+### Deliverable
+Create `src/infrastructure/loaders/` and `src/infrastructure/repositories/` modules (plus ports/interfaces) for metadata, popularity tables, similarity assets, and user-profile data.
+
+### Must Include
+1. **Artifact loader module**
+   - load CSV/JSON/NPZ/NPY artifacts from `artifacts/`
+   - centralize file parsing and error handling
+2. **Startup validator**
+   - required file checks
+   - schema/shape validation
+   - manifest/parameter consistency checks
+3. **Repository implementations**
+   - movie metadata repository
+   - global popularity repository
+   - genre popularity repository
+   - similarity repository (content + collaborative assets)
+   - user profile repository
+   - artifact manifest repository
+4. **Application ports/interfaces**
+   - define repository contracts in `src/application/ports/`
+   - avoid leaking file-format details into service code
+5. **Lookup construction**
+   - title search indexes / normalized title lookup
+   - `movieId` mapping helpers
+   - reusable metadata lookups for rendering and filtering
+
+### Recommended Visuals / Diagrams
+- Repository dependency diagram (services -> ports -> infrastructure implementations)
+- Artifact loading and validation sequence diagram
+
+### Non-Technical Explanation Requirement
+Explain, in plain language, why the app should load files in one place instead of in each screen or button handler.
+
+---
+
+### Task 10 - Application Services, Routing, and Recommendation Orchestration
+
+### Goal
+Implement the application service layer that translates UI requests into recommendation results with explicit mode routing, fallback logic, and explanation generation.
+
+### Deliverable
+Create `src/application/services/` and a thin `src/serving/api.py` facade that the Streamlit UI can call for all recommendation requests.
+
+### Must Include
+1. **Recommendation orchestration service**
+   - request validation handoff
+   - candidate generation orchestration
+   - ranking/explanation/post-filter orchestration
+2. **Routing service**
+   - personalized mode
+   - cold-start mode
+   - similar-movie mode
+   - fallback escalation logic and mode trace
+3. **Explanation service**
+   - plain-language reasons (for example "Because you liked X", "Popular in genre Y", "Similar to Z")
+   - clear fallback explanation text when personalization is weak
+4. **Search and filter services**
+   - title lookup / disambiguation support
+   - post-ranking filters and controlled relaxation behavior
+5. **Request/response DTOs**
+   - typed request and response models in `src/domain/`
+   - fields for status messages, warnings, mode used, and fallback reason
+
+### Recommended Visuals / Diagrams
+- Request routing flow (mode decision + fallback branches)
+- Explanation generation flow (source reason -> formatted message)
+
+### Non-Technical Explanation Requirement
+Below each routing or explanation diagram, explain:
+- how the app chooses the recommendation mode
+- when fallback is used
+- how the app tells the user what happened
+
+---
+
+### Task 11 - UI Integration with Service Facade and Result Rendering
+
+### Goal
+Connect the Streamlit UI to the serving/application layer so the app can render real recommendations, explanations, and status messages with thin view logic.
+
+### Deliverable
+Integrate `app/views/` and `app/components/` with `src/serving/api.py` (or equivalent facade) and render end-to-end recommendations for all supported modes.
+
+### Must Include
+1. **UI-to-service integration**
+   - convert widget state into request DTOs
+   - call service facade from controller code (not directly from presentation-only components)
+2. **Recommendation result rendering**
+   - title/year/genres display
+   - explanation text
+   - optional poster placeholder support
+3. **Mode-specific status messaging**
+   - indicate which mode ran
+   - indicate whether fallback was used and why
+4. **Empty and error states**
+   - no title match
+   - insufficient preferences
+   - missing metadata
+   - empty recommendation set after filters
+5. **View thinness rule**
+   - avoid moving ranking or file-loading logic into Streamlit views/components
+
+### Recommended Visuals / Diagrams
+- UI render flow (user action -> request -> response -> cards/messages)
+- Example result card / explanation layout sketch
+
+### Non-Technical Explanation Requirement
+For each UI flow or mockup diagram, explain what the user sees, why the explanation text is shown, and how fallback behavior is communicated.
+
+---
+
+### Task 12 - Caching, Performance, and Runtime Observability
+
+### Goal
+Make the Streamlit app responsive and inspectable by applying caching correctly, bounding candidate/ranking work, and instrumenting request timings.
+
+### Deliverable
+Implement caching and timing instrumentation for startup and request-time stages, then document/verify expected responsiveness for common interactions.
+
+### Must Include
+1. **Caching implementation**
+   - `st.cache_resource` for heavy immutable artifacts/resources
+   - `st.cache_data` for deterministic derived tables/lookups
+   - `st.session_state` for UI state
+2. **Runtime boundaries**
+   - artifact load once vs request-time ranking
+   - avoid repeated expensive parsing on widget reruns
+3. **Performance instrumentation**
+   - startup load timing
+   - request validation timing
+   - candidate generation / ranking / rendering timing
+   - total response timing
+4. **Bottleneck controls**
+   - candidate limits / ranking caps
+   - debug mode timing output
+   - safe defaults for interactive use
+5. **Responsiveness checks**
+   - verify common interactions feel immediate after artifacts are loaded
+   - document deviations and causes
+
+### Recommended Visuals / Diagrams
+- Cache boundary diagram (startup vs request path)
+- Timing breakdown chart/table for common interaction types
+
+### Non-Technical Explanation Requirement
+Below each caching or timing visual, explain:
+- what is loaded once vs repeated on each click
+- why caching helps the app feel responsive
+- what the timing numbers mean for users (not only developers)
+
+---
+
+### Task 13 - Testing, QA, and Demo Readiness
+
+### Goal
+Validate that the app behavior is correct, stable, and explainable across modes, edge cases, and artifact states before demo/handover.
+
+### Deliverable
+Create tests and QA checklists that cover service logic, artifact loading, startup validation, and key end-to-end app flows for the Streamlit v1 demo.
+
+### Must Include
+1. **Unit tests**
+   - routing service
+   - explanation service
+   - filter service / fallback behavior
+   - startup validator
+2. **Integration tests**
+   - artifact loading and repository initialization
+   - recommendation pipeline request -> response contract
+3. **Smoke checks**
+   - app startup with valid artifacts
+   - clear failure when required artifacts are missing
+4. **Manual QA checklist**
+   - returning user flow
+   - new user / cold-start flow
+   - similar-movie flow
+   - edge cases and error states
+5. **Demo readiness checklist**
+   - example users/titles prepared
+   - fallback behavior visible and explainable
+   - timing/debug output available if needed
+
+### Recommended Visuals / Diagrams
+- Test pyramid / test-scope overview
+- QA flow checklist diagram (startup -> mode checks -> edge cases -> demo run)
+
+### Non-Technical Explanation Requirement
+Add a short plain-language explanation of why testing includes both automatic tests and a manual demo checklist for a recommender app.
+
+---
+
+### Task 14 - Packaging, Runbook, and Implementation Handover
+
+### Goal
+Make the Streamlit app reproducible and easy for another developer to run, debug, and demo from a clean environment.
+
+### Deliverable
+Add/update project runbook and packaging/setup documentation (and missing supporting files where needed) for the Streamlit app implementation.
+
+### Must Include
+1. **Dependency management**
+   - create `requirements.txt` or `pyproject.toml`
+   - include Streamlit and core runtime dependencies
+2. **Run commands and environment setup**
+   - local setup commands
+   - app run command(s)
+   - artifact prerequisite checks
+3. **Configuration and paths**
+   - document artifact paths and overrides
+   - optional `.streamlit/config.toml` setup if used
+4. **Developer handover docs**
+   - how to regenerate artifacts
+   - how to troubleshoot missing/invalid artifacts
+   - how to run tests and smoke checks
+5. **Known limitations and release/demo checklist**
+   - sampled AAA evaluation caveat
+   - historical `ml-25m` limitations
+   - remaining v2 improvements and non-scope items
+
+### Recommended Visuals / Diagrams
+- Environment/setup flow (install -> export artifacts -> run app -> test)
+- Handover checklist summary table
+
+### Non-Technical Explanation Requirement
+Add a short paragraph explaining why setup/run documentation is part of product quality for stakeholder demos, not only a developer convenience.
+
+---
+
+## 8. Extended Execution Order (QUAAACK + App Build)
+1. `Q-Phase.ipynb`
+2. `U-Phase.ipynb`
+3. `A-Phase.ipynb` (AAA combined)
+4. `C-Phase.ipynb`
+5. `K-Phase.ipynb`
+6. Task 6: App architecture and serving contract (`ARCHITECTURE.md`)
+7. Task 7: Artifact export and startup validation
+8. Task 8: Streamlit app scaffolding and UI foundation
+9. Task 9: Repositories, loaders, and artifact access layer
+10. Task 10: Application services, routing, and recommendation orchestration
+11. Task 11: UI integration with service facade and result rendering
+12. Task 12: Caching, performance, and runtime observability
+13. Task 13: Testing, QA, and demo readiness
+14. Task 14: Packaging, runbook, and implementation handover
+
+This extended order preserves the original QUAAACK notebook sequence and then adds a clear, implementation-focused path to a professional Streamlit app.
