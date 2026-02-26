@@ -86,7 +86,7 @@ The tasks below follow your requirement:
 - `AAA` is combined into a single task
 - `C` and `K` are included to complete QUAAACK
 
-### Task 1 - Q-Phase Notebook (`Q-Phase.ipynb`)
+### Task 1 - Q-Phase Notebook (`Q-Phase.ipynb`) DONE
 
 ### Goal
 Define the recommendation problem clearly before building anything.
@@ -136,7 +136,7 @@ Add a short explanation below each diagram describing:
 
 ---
 
-### Task 2 - U-Phase Notebook (`U-Phase.ipynb`)
+### Task 2 - U-Phase Notebook (`U-Phase.ipynb`) DONE
 
 ### Goal
 Understand the `ml-25m` dataset structure, quality, sparsity, and modeling constraints.
