@@ -1,0 +1,65 @@
+[
+  {
+    "artifact_name": "movie_metadata_table",
+    "path": "artifacts/movie_metadata.csv",
+    "format": "CSV",
+    "source": "movies.csv",
+    "purpose": "Display titles/years/genres in Streamlit recommendation cards"
+  },
+  {
+    "artifact_name": "global_popularity_table",
+    "path": "artifacts/global_popularity_train.csv",
+    "format": "CSV",
+    "source": "train_ratings_df",
+    "purpose": "Global popularity baseline and fallback recommendations"
+  },
+  {
+    "artifact_name": "genre_popularity_table",
+    "path": "artifacts/genre_popularity_train.csv",
+    "format": "CSV",
+    "source": "train_ratings_df + movies.csv",
+    "purpose": "Genre-filtered popularity fallback and explanations"
+  },
+  {
+    "artifact_name": "genre_feature_matrix",
+    "path": "artifacts/genre_features.npz",
+    "format": "NumPy NPZ",
+    "source": "movies.csv",
+    "purpose": "Content-based scoring and similar-movie recommendations"
+  },
+  {
+    "artifact_name": "genre_feature_columns",
+    "path": "artifacts/genre_feature_columns.json",
+    "format": "JSON",
+    "source": "movies.csv",
+    "purpose": "Preserve genre encoder column order"
+  },
+  {
+    "artifact_name": "collaborative_item_similarity",
+    "path": "artifacts/cf_item_similarity.npz",
+    "format": "NumPy NPZ",
+    "source": "train_ratings_df (positive interactions)",
+    "purpose": "Item-item collaborative scoring in Streamlit inference path"
+  },
+  {
+    "artifact_name": "collaborative_item_ids",
+    "path": "artifacts/cf_item_ids.npy",
+    "format": "NumPy NPY",
+    "source": "train_ratings_df",
+    "purpose": "Map similarity matrix rows/cols to movie IDs"
+  },
+  {
+    "artifact_name": "aaa_model_config",
+    "path": "artifacts/aaa_selected_params.json",
+    "format": "JSON",
+    "source": "A-Phase tuning output",
+    "purpose": "Store selected hyperparameters and evaluation settings"
+  },
+  {
+    "artifact_name": "artifact_manifest",
+    "path": "artifacts/aaa_artifact_manifest.json",
+    "format": "JSON",
+    "source": "A-Phase notebook",
+    "purpose": "Document artifact paths, purposes, and provenance"
+  }
+]

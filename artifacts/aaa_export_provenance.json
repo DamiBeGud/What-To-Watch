@@ -1,0 +1,67 @@
+{
+  "artifact_bundle_schema_version": "1.0",
+  "generated_at_utc": "2026-02-26T22:13:04+00:00",
+  "generator": "src.infrastructure.loaders.artifact_exporter",
+  "source_notebook": "A-Phase.ipynb",
+  "selected_params_path": "artifacts/aaa_selected_params.json",
+  "artifact_manifest_path": "artifacts/aaa_artifact_manifest.json",
+  "user_profiles_artifact_path": "artifacts/user_profiles_train.jsonl",
+  "a_phase_config": {
+    "seed": 42,
+    "k": 10,
+    "relevance_threshold": 4.0,
+    "val_holdout": 1,
+    "test_holdout": 1,
+    "min_train_interactions_after_split": 5,
+    "sample_max_users": 1200,
+    "sample_user_strategy": "random_eligible",
+    "max_ratings_rows": null,
+    "content_profile_min_rating": 4.0,
+    "content_candidate_limit_default": 1200,
+    "genre_pref_top_n_default": 2,
+    "pop_min_count_default": 20,
+    "cf_positive_threshold": 4.0,
+    "cf_min_item_interactions": 20,
+    "cf_max_items": 2000,
+    "cf_top_neighbors_default": 50,
+    "tune_user_limit": 400,
+    "segment_split_quantile": 0.5
+  },
+  "selected_v1_reference_source": "C-Phase.ipynb",
+  "selected_v1_params": {
+    "pop_min_count": 20,
+    "content_profile_min_rating": 4.0,
+    "cf_top_neighbors": 20,
+    "hybrid_alpha": 0.8,
+    "genre_pref_top_n": 3
+  },
+  "sampling_assumption": {
+    "aaa_notebook_scope": "runtime-safe sampled eligible users by default",
+    "sample_max_users": 1200,
+    "sample_user_strategy": "random_eligible",
+    "note": "This export follows the A-Phase runtime-safe sampled configuration unless the exporter config is changed. This is suitable for Streamlit v1 demo serving but should be documented as sampled-vs-full when reporting results."
+  },
+  "evaluation_assumptions": {
+    "split_policy": "per-user chronological holdout",
+    "val_holdout": 1,
+    "test_holdout": 1,
+    "min_train_interactions_after_split": 5,
+    "relevance_threshold": 4.0,
+    "k": 10
+  },
+  "source_data": {
+    "ratings_csv": "ml-25m/ratings.csv",
+    "movies_csv": "ml-25m/movies.csv"
+  },
+  "export_summary": {
+    "eligible_users_before_sampling": 162541,
+    "sampled_users_used": 1200,
+    "train_rows": 194459,
+    "val_rows": 1200,
+    "test_rows": 1200,
+    "train_users": 1200,
+    "train_movies": 13658,
+    "leakage_check_train_before_val_pass_rate": 1.0,
+    "leakage_check_train_before_test_pass_rate": 1.0
+  }
+}

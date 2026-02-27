@@ -1,0 +1,19 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /workspace
+
+# Streamlit runtime deps for the v1 app + artifact loading/validation.
+COPY requirements-streamlit.txt /tmp/requirements-streamlit.txt
+RUN pip install --no-cache-dir -r /tmp/requirements-streamlit.txt
+
+COPY streamlit-entrypoint.sh /usr/local/bin/streamlit-entrypoint.sh
+RUN chmod +x /usr/local/bin/streamlit-entrypoint.sh
+
+EXPOSE 8501
+
+CMD ["/usr/local/bin/streamlit-entrypoint.sh"]
+

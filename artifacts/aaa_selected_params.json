@@ -1,0 +1,7 @@
+{
+  "pop_min_count": 20,
+  "content_profile_min_rating": 4.0,
+  "cf_top_neighbors": 20,
+  "hybrid_alpha": 0.8,
+  "genre_pref_top_n": 3
+}

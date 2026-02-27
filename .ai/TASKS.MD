@@ -387,7 +387,7 @@ This order preserves the QUAAACK logic and matches the writing style pattern use
 
 ## 6. App Architecture Standards (applies to Streamlit app implementation tasks)
 
-These standards apply to the **post-QUAAACK app implementation tasks** below and should be read together with `AGENTS.md`, `DATA.md`, `DECISIONS.md`, and `ARCHITECTURE.md`.
+These standards apply to the **post-QUAAACK app implementation tasks** below and should be read together with `.ai/AGENTS.md`, `DATA.md`, `DECISIONS.md`, and `ARCHITECTURE.md`.
 
 ### Architecture Direction (required)
 - Use a layered app structure with clear separation of concerns:
@@ -467,7 +467,7 @@ For each architecture or flow diagram, add a short paragraph that explains:
 
 ---
 
-### Task 7 - Artifact Export and Startup Validation for App Serving
+### Task 7 - Artifact Export and Startup Validation for App Serving DONE
 
 ### Goal
 Prepare and validate the offline artifacts required by the Streamlit app so the runtime path stays fast and reproducible.
@@ -506,7 +506,7 @@ For each artifact/validation diagram, explain:
 
 ---
 
-### Task 8 - Streamlit App Scaffolding and UI Foundation
+### Task 8 - Streamlit App Scaffolding and UI Foundation DONE
 
 ### Goal
 Create the Streamlit app skeleton with a professional structure for views, components, controllers, presenters, and session state management.
@@ -543,7 +543,7 @@ For each UI diagram/wireframe, add a short paragraph that explains:
 
 ---
 
-### Task 9 - Repositories, Loaders, and Artifact Access Layer
+### Task 9 - Repositories, Loaders, and Artifact Access Layer DONE
 
 ### Goal
 Implement a repository/infrastructure layer that centralizes artifact loading, parsing, lookup construction, and startup validation so UI and services do not read files directly.
@@ -583,7 +583,7 @@ Explain, in plain language, why the app should load files in one place instead o
 
 ---
 
-### Task 10 - Application Services, Routing, and Recommendation Orchestration
+### Task 10 - Application Services, Routing, and Recommendation Orchestration DONE
 
 ### Goal
 Implement the application service layer that translates UI requests into recommendation results with explicit mode routing, fallback logic, and explanation generation.
@@ -623,7 +623,7 @@ Below each routing or explanation diagram, explain:
 
 ---
 
-### Task 11 - UI Integration with Service Facade and Result Rendering
+### Task 11 - UI Integration with Service Facade and Result Rendering DONE
 
 ### Goal
 Connect the Streamlit UI to the serving/application layer so the app can render real recommendations, explanations, and status messages with thin view logic.
@@ -659,7 +659,7 @@ For each UI flow or mockup diagram, explain what the user sees, why the explanat
 
 ---
 
-### Task 12 - Caching, Performance, and Runtime Observability
+### Task 12 - Caching, Performance, and Runtime Observability DONE
 
 ### Goal
 Make the Streamlit app responsive and inspectable by applying caching correctly, bounding candidate/ranking work, and instrumenting request timings.

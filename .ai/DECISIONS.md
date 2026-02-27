@@ -30,7 +30,7 @@ When a decision changes, add a new entry instead of silently rewriting history.
   - Benefits
   - Tradeoffs / risks
 - Related files:
-  - `AGENTS.md`
+  - `.ai/AGENTS.md`
   - `TASKS.MD`
   - (add notebook/script paths)
 
@@ -57,7 +57,7 @@ When a decision changes, add a new entry instead of silently rewriting history.
     - Requires discipline to keep notebooks synchronized with code artifacts.
 - Related files:
   - `TASKS.MD`
-  - `AGENTS.md`
+  - `.ai/AGENTS.md`
 
 ### ADR-002: Build the UI in Streamlit and keep heavy training offline
 - Status: `accepted`
@@ -77,7 +77,7 @@ When a decision changes, add a new entry instead of silently rewriting history.
     - Requires artifact versioning and compatibility checks.
     - Model updates require a retrain/export step before UI sees changes.
 - Related files:
-  - `AGENTS.md`
+  - `.ai/AGENTS.md`
   - `TASKS.MD`
   - `DATA.md`
 
@@ -122,7 +122,7 @@ When a decision changes, add a new entry instead of silently rewriting history.
     - Evaluation setup is more complex than simple regression metrics.
     - Requires explicit relevance threshold and split policy documentation.
 - Related files:
-  - `AGENTS.md`
+  - `.ai/AGENTS.md`
   - `TASKS.MD`
   - `DATA.md`
 
@@ -167,7 +167,7 @@ When a decision changes, add a new entry instead of silently rewriting history.
     - Requires multiple implementations before final model selection.
     - Hybrid logic can increase integration complexity.
 - Related files:
-  - `AGENTS.md`
+  - `.ai/AGENTS.md`
   - `TASKS.MD`
 
 ### ADR-007: Require plain-language explanations in notebooks and diagrams

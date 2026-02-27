@@ -1,2 +1,52 @@
-./tests
-*.csv
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Python cache / build artifacts
+__pycache__/
+*.py[cod]
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Test / lint / type-check caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Streamlit local secrets/config (keep app code, ignore local secrets)
+.streamlit/secrets.toml
+
+# Local helper/reference folder used in this repo
+.tests/
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Raw dataset CSVs (avoid accidental additions if not already tracked)
+ml-25m/*.csv
+
+# Generated serving artifacts (Task 7) - keep lightweight contract/provenance docs trackable
+artifacts/*
+!artifacts/README.md
+!artifacts/aaa_artifact_manifest.json
+!artifacts/aaa_selected_params.json
+!artifacts/aaa_export_provenance.json
+!artifacts/user_profiles_schema.json

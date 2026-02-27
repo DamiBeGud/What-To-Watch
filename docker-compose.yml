@@ -19,3 +19,20 @@ services:
       --allow-root
       --NotebookApp.token='' 
       --NotebookApp.password=''
+
+  streamlit_app:
+    profiles: ["app"]
+    build:
+      context: ./.docker
+      dockerfile: Dockerfile.streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/workspace
+    environment:
+      - PYTHONPATH=/workspace
+      - ARTIFACTS_DIR=artifacts
+      - RUN_STARTUP_VALIDATION=1
+      - STREAMLIT_APP_FILE=streamlit_app.py
+      - STREAMLIT_SERVER_PORT=8501
+    command: ["/usr/local/bin/streamlit-entrypoint.sh"]

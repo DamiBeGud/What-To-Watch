@@ -1,0 +1,45 @@
+{
+  "artifact_path": "artifacts/user_profiles_train.jsonl",
+  "format": "jsonl",
+  "schema_version": "1.0",
+  "description": "Compact train-split user profiles for returning-user personalized mode (no runtime ratings.csv load).",
+  "personalized_mode_usage": "At app startup, repositories load this artifact to resolve a returning user's seen items, positive seed items, and simple preference hints (preferred genres). The app can route to hybrid personalization quickly without loading the full ml-25m/ratings.csv file in the request path.",
+  "required_fields": [
+    {
+      "name": "userId",
+      "type": "int",
+      "notes": "MovieLens user ID present in the AAA train split export scope."
+    },
+    {
+      "name": "train_interaction_count",
+      "type": "int",
+      "notes": "Count of train interactions after chronological split."
+    },
+    {
+      "name": "positive_interaction_count",
+      "type": "int",
+      "notes": "Count of train ratings >= relevance_threshold."
+    },
+    {
+      "name": "train_mean_rating",
+      "type": "float",
+      "notes": "Mean explicit rating in the train split."
+    },
+    {
+      "name": "seen_movie_ids",
+      "type": "list[int]",
+      "notes": "Chronological train history movie IDs."
+    },
+    {
+      "name": "positive_seed_movie_ids",
+      "type": "list[int]",
+      "notes": "Positive train movies sorted by rating then recency."
+    },
+    {
+      "name": "preferred_genres",
+      "type": "list[str]",
+      "notes": "Top genres derived from positive seeds (or seen items fallback)."
+    }
+  ],
+  "tradeoff_note": "JSONL is used for portability in environments without parquet dependencies. Parquet is a valid future upgrade for smaller on-disk size and faster columnar scans."
+}

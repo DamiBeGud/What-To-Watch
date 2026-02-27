@@ -1,0 +1,5 @@
+streamlit==1.42.2
+numpy==2.2.3
+pandas==2.2.3
+pyarrow==19.0.1
+
