@@ -110,6 +110,23 @@ docker compose --profile app ps streamlit_app
 
 Open: `http://localhost:8501`
 
+### Notebook to PDF export
+Build the exporter image:
+```bash
+cd /Users/damibegud/uni/python
+docker compose --profile pdf build notebook_pdf
+```
+
+Convert every notebook in the repo into `.pdf/`:
+```bash
+docker compose --profile pdf run --rm notebook_pdf
+```
+
+Convert selected notebooks only:
+```bash
+docker compose --profile pdf run --rm notebook_pdf A-Phase.ipynb C-Phase.ipynb
+```
+
 ### Local path
 ```bash
 cd /Users/damibegud/uni/python

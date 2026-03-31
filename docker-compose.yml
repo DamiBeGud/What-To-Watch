@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   jupyter:
     build:
@@ -12,13 +10,24 @@ services:
     environment:
       - JUPYTER_ENABLE_LAB=yes
     command: >
-      jupyter lab 
-      --ip=0.0.0.0 
-      --port=8888 
-      --no-browser 
+      jupyter lab
+      --ip=0.0.0.0
+      --port=8888
+      --no-browser
       --allow-root
-      --NotebookApp.token='' 
+      --NotebookApp.token=''
       --NotebookApp.password=''
+
+  notebook_pdf:
+    profiles: ["pdf"]
+    build:
+      context: ./.docker
+      dockerfile: Dockerfile.nbconvert
+    volumes:
+      - .:/workspace
+    environment:
+      - WORKSPACE_DIR=/workspace
+      - OUTPUT_DIR=/workspace/.pdf
 
   streamlit_app:
     profiles: ["app"]

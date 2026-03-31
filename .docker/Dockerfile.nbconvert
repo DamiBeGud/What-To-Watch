@@ -1,0 +1,20 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+
+WORKDIR /workspace
+
+RUN pip install --no-cache-dir \
+    jupyterlab \
+    "nbconvert[webpdf]" \
+ && python -m playwright install --with-deps chromium
+
+COPY nbconvert-entrypoint.sh /usr/local/bin/nbconvert-entrypoint.sh
+RUN chmod +x /usr/local/bin/nbconvert-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/nbconvert-entrypoint.sh"]
+CMD []
